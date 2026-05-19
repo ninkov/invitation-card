@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toBlob, toPng } from "html-to-image";
 import download from "downloadjs";
 
@@ -118,17 +118,59 @@ function fileToDataUrl(file) {
   });
 }
 
+async function imageUrlToDataUrl(url) {
+  if (url.startsWith("data:")) return url;
+
+  const response = await fetch(url);
+  const blob = await response.blob();
+  return fileToDataUrl(blob);
+}
+
+async function waitForImages(node) {
+  const images = Array.from(node.querySelectorAll("img"));
+
+  await Promise.all(
+    images.map((image) => {
+      if (image.complete && image.naturalWidth > 0) {
+        return image.decode ? image.decode().catch(() => undefined) : Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        image.addEventListener("load", resolve, { once: true });
+        image.addEventListener("error", resolve, { once: true });
+      });
+    }),
+  );
+}
+
 function App() {
   const [activeTemplateId, setActiveTemplateId] = useState(templates[0].id);
   const activeTemplate = templates.find((item) => item.id === activeTemplateId);
   const [card, setCard] = useState(templates[0].fields);
   const [photo, setPhoto] = useState("");
   const [customBackground, setCustomBackground] = useState("");
+  const [embeddedBackground, setEmbeddedBackground] = useState(partyDefault);
   const [contentPosition, setContentPosition] = useState("middle");
   const [shareStatus, setShareStatus] = useState("");
   const cardRef = useRef(null);
 
   const background = customBackground || activeTemplate.background;
+
+  useEffect(() => {
+    let isActive = true;
+
+    imageUrlToDataUrl(background)
+      .then((dataUrl) => {
+        if (isActive) setEmbeddedBackground(dataUrl);
+      })
+      .catch(() => {
+        if (isActive) setEmbeddedBackground(background);
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [background]);
 
   const message = useMemo(
     () =>
@@ -166,6 +208,8 @@ function App() {
   const exportCard = async () => {
     if (!cardRef.current) return;
 
+    await waitForImages(cardRef.current);
+
     const dataUrl = await toPng(cardRef.current, {
       cacheBust: true,
       pixelRatio: 2,
@@ -175,6 +219,8 @@ function App() {
 
   const createCardFile = async () => {
     if (!cardRef.current) return;
+
+    await waitForImages(cardRef.current);
 
     const blob = await toBlob(cardRef.current, {
       cacheBust: true,
@@ -206,7 +252,6 @@ function App() {
     if (navigator.canShare?.({ files: [file] })) {
       try {
         await navigator.share({
-          title: card.eventTitle,
           files: [file],
         });
         setShareStatus(`Поканата е подадена като PNG. Избери ${targetLabel} от менюто за споделяне.`);
@@ -218,6 +263,7 @@ function App() {
       return;
     }
 
+    await waitForImages(cardRef.current);
     download(await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 }), file.name);
     openFallbackTarget(target);
     setShareStatus(
@@ -326,7 +372,7 @@ function App() {
               "--accent": activeTemplate.accent,
             }}
           >
-            <img className="card-background" src={background} alt="" aria-hidden="true" />
+            <img className="card-background" src={embeddedBackground} alt="" aria-hidden="true" />
             <div className="card-overlay" />
             <div className="card-content">
               <p className="card-kicker">Покана за</p>
