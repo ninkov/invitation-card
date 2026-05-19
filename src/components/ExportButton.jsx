@@ -1,7 +1,7 @@
 import { toPng } from "html-to-image";
 import download from "downloadjs";
 
-export default function ExportButton({ photo, text }) {
+export default function ExportButton() {
   const exportCard = () => {
     const node = document.getElementById("card");
     toPng(node)
