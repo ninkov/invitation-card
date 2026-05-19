@@ -306,16 +306,34 @@ textarea:focus {
   position: relative;
   overflow: hidden;
   border-radius: 8px;
-  background-size: cover;
-  background-position: center;
+  background: #263441;
   color: #fff;
   box-shadow: 0 24px 55px rgba(19, 31, 43, 0.28);
+}
+
+.card-background,
+.card-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.card-background {
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-overlay {
+  z-index: 1;
+  background: linear-gradient(90deg, rgba(9, 23, 32, 0.7), rgba(9, 23, 32, 0.12));
 }
 
 .invitation-card::before {
   content: "";
   position: absolute;
   inset: 20px;
+  z-index: 4;
   border: 2px solid rgba(255, 255, 255, 0.78);
   border-radius: 8px;
   pointer-events: none;
@@ -325,7 +343,7 @@ textarea:focus {
   position: absolute;
   left: clamp(28px, 7%, 56px);
   right: clamp(28px, 34%, 280px);
-  z-index: 2;
+  z-index: 3;
   display: grid;
   gap: clamp(8px, 1.5vw, 13px);
 }
@@ -400,7 +418,7 @@ textarea:focus {
   position: absolute;
   right: clamp(24px, 6%, 54px);
   top: clamp(28px, 7%, 62px);
-  z-index: 2;
+  z-index: 3;
   width: clamp(120px, 24%, 190px);
   aspect-ratio: 1;
   padding: 7px;

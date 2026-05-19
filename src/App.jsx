@@ -207,7 +207,6 @@ function App() {
       try {
         await navigator.share({
           title: card.eventTitle,
-          text: message,
           files: [file],
         });
         setShareStatus(`Поканата е подадена като PNG. Избери ${targetLabel} от менюто за споделяне.`);
@@ -325,9 +324,10 @@ function App() {
             className={`invitation-card content-${contentPosition}`}
             style={{
               "--accent": activeTemplate.accent,
-              backgroundImage: `linear-gradient(90deg, rgba(9, 23, 32, 0.7), rgba(9, 23, 32, 0.12)), url(${background})`,
             }}
           >
+            <img className="card-background" src={background} alt="" aria-hidden="true" />
+            <div className="card-overlay" />
             <div className="card-content">
               <p className="card-kicker">Покана за</p>
               <h2>{card.eventTitle}</h2>
