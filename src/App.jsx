@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toBlob, toPng } from "html-to-image";
+import { toPng } from "html-to-image";
 import download from "downloadjs";
 
 import "./App.css";
@@ -143,6 +143,19 @@ async function waitForImages(node) {
   );
 }
 
+function dataUrlToFile(dataUrl, fileName) {
+  const [header, base64Data] = dataUrl.split(",");
+  const mime = header.match(/:(.*?);/)?.[1] || "image/png";
+  const binary = atob(base64Data);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return new File([bytes], fileName, { type: mime });
+}
+
 function App() {
   const [activeTemplateId, setActiveTemplateId] = useState(templates[0].id);
   const activeTemplate = templates.find((item) => item.id === activeTemplateId);
@@ -222,19 +235,17 @@ function App() {
 
     await waitForImages(cardRef.current);
 
-    const blob = await toBlob(cardRef.current, {
+    const dataUrl = await toPng(cardRef.current, {
       cacheBust: true,
       pixelRatio: 2,
     });
 
-    if (!blob) {
+    if (!dataUrl) {
       setShareStatus("Не успях да генерирам изображение за споделяне.");
       return;
     }
 
-    return new File([blob], `pokana-${card.hostName || "card"}.png`, {
-      type: "image/png",
-    });
+    return dataUrlToFile(dataUrl, `pokana-${card.hostName || "card"}.png`);
   };
 
   const openFallbackTarget = (target) => {
