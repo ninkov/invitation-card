@@ -90,7 +90,7 @@ const shareTargets = [
   {
     id: "whatsapp",
     label: "WhatsApp",
-    getFallbackUrl: (text) => `https://wa.me/?text=${encodeURIComponent(text)}`,
+    strictFileOnly: true,
   },
   {
     id: "viber",
@@ -100,8 +100,7 @@ const shareTargets = [
   {
     id: "facebook",
     label: "Facebook",
-    getFallbackUrl: (text) =>
-      `https://www.facebook.com/sharer/sharer.php?quote=${encodeURIComponent(text)}`,
+    strictFileOnly: true,
   },
 ];
 const layoutOptions = [
@@ -245,7 +244,7 @@ function App() {
       return;
     }
 
-    return dataUrlToFile(dataUrl, `pokana-${card.hostName || "card"}.png`);
+    return dataUrlToFile(dataUrl, "invitation-card.png");
   };
 
   const openFallbackTarget = (target) => {
@@ -261,7 +260,13 @@ function App() {
     if (!file) return;
 
     if (navigator.canShare?.({ files: [file] })) {
+      const currentDocumentTitle = document.title;
+
       try {
+        if (target?.strictFileOnly) {
+          document.title = "";
+        }
+
         await navigator.share({
           files: [file],
         });
@@ -270,6 +275,8 @@ function App() {
         if (error.name !== "AbortError") {
           setShareStatus("Споделянето беше прекъснато от браузъра. Можеш да свалиш PNG и да го изпратиш ръчно.");
         }
+      } finally {
+        document.title = currentDocumentTitle;
       }
       return;
     }
