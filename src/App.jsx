@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toPng } from "html-to-image";
 import download from "downloadjs";
 
@@ -87,21 +87,9 @@ const fieldLabels = {
 };
 
 const shareTargets = [
-  {
-    id: "whatsapp",
-    label: "WhatsApp",
-    strictFileOnly: true,
-  },
-  {
-    id: "viber",
-    label: "Viber",
-    getFallbackUrl: (text) => `viber://forward?text=${encodeURIComponent(text)}`,
-  },
-  {
-    id: "facebook",
-    label: "Facebook",
-    strictFileOnly: true,
-  },
+  { id: "whatsapp", label: "WhatsApp" },
+  { id: "viber", label: "Viber" },
+  { id: "facebook", label: "Facebook" },
 ];
 const layoutOptions = [
   { id: "upper", label: "Горе" },
@@ -184,12 +172,6 @@ function App() {
     };
   }, [background]);
 
-  const message = useMemo(
-    () =>
-      `Здравей, ${card.guestName}! Каня те на ${card.eventTitle} на ${card.hostName}. Място: ${card.place}. Дата: ${card.date}, час: ${card.time}. ${card.note} Моля, потвърди до ${card.rsvpDate}.`,
-    [card],
-  );
-
   const updateField = (field, value) => {
     setCard((current) => ({ ...current, [field]: value }));
   };
@@ -247,12 +229,6 @@ function App() {
     return dataUrlToFile(dataUrl, "invitation-card.png");
   };
 
-  const openFallbackTarget = (target) => {
-    if (!target?.getFallbackUrl) return;
-
-    window.open(target.getFallbackUrl(message), "_blank", "noopener,noreferrer");
-  };
-
   const shareCard = async (target) => {
     const file = await createCardFile();
     const targetLabel = target?.label || "избраното приложение";
@@ -260,13 +236,7 @@ function App() {
     if (!file) return;
 
     if (navigator.canShare?.({ files: [file] })) {
-      const currentDocumentTitle = document.title;
-
       try {
-        if (target?.strictFileOnly) {
-          document.title = "";
-        }
-
         await navigator.share({
           files: [file],
         });
@@ -275,18 +245,15 @@ function App() {
         if (error.name !== "AbortError") {
           setShareStatus("Споделянето беше прекъснато от браузъра. Можеш да свалиш PNG и да го изпратиш ръчно.");
         }
-      } finally {
-        document.title = currentDocumentTitle;
       }
       return;
     }
 
     await waitForImages(cardRef.current);
     download(await toPng(cardRef.current, { cacheBust: true, pixelRatio: 2 }), file.name);
-    openFallbackTarget(target);
     setShareStatus(
       target
-        ? `Свалих PNG поканата и отворих ${targetLabel}. Прикачи сваления файл в разговора или публикацията.`
+        ? `Този браузър не позволява директно изпращане към ${targetLabel}. Свалих PNG поканата, за да я прикачиш ръчно.`
         : "Този браузър не позволява директно изпращане на PNG файл. Свалих поканата, за да я прикачиш ръчно.",
     );
   };
