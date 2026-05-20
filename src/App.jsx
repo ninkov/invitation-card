@@ -418,10 +418,10 @@ function App() {
         <aside className="editor-panel" aria-label="Редактор на покана">
           <div className="brand-row">
             <div>
-              <p className="eyebrow">Invitation studio</p>
+              
               <h1>Създай динамична покана</h1>
             </div>
-            <span className="status-pill">PNG + Share</span>
+           
           </div>
 
           <div className="control-group">
