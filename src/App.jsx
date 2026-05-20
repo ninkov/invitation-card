@@ -237,10 +237,11 @@ function App() {
 
     if (navigator.canShare?.({ files: [file] })) {
       try {
+        setShareStatus(`Отварям менюто за споделяне. Избери ${targetLabel}.`);
         await navigator.share({
           files: [file],
         });
-        setShareStatus(`Поканата е подадена като PNG. Избери ${targetLabel} от менюто за споделяне.`);
+        setShareStatus(`Поканата беше споделена като PNG през ${targetLabel}.`);
       } catch (error) {
         if (error.name !== "AbortError") {
           setShareStatus("Споделянето беше прекъснато от браузъра. Можеш да свалиш PNG и да го изпратиш ръчно.");
@@ -344,6 +345,9 @@ function App() {
               </button>
             ))}
           </div>
+          <p className="share-hint">
+            Бутоните отварят системното меню за споделяне с готов PNG. Избери съответното приложение от менюто.
+          </p>
 
           {shareStatus && <p className="share-status">{shareStatus}</p>}
         </aside>
