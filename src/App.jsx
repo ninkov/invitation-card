@@ -189,18 +189,22 @@ function drawTextBlock(context, text, x, y, maxWidth, lineHeight) {
   return y + lines.length * lineHeight;
 }
 
-function drawPill(context, text, x, y, accent, fontSize = 42) {
+function drawPill(context, text, x, y, accent, fontSize = 34) {
+  context.save();
   context.font = `800 ${fontSize}px Inter, Arial, sans-serif`;
-  const paddingX = 34;
+  context.textBaseline = "middle";
+  context.shadowColor = "transparent";
+  const paddingX = 30;
   const width = context.measureText(text).width + paddingX * 2;
-  const height = 74;
+  const height = 64;
 
   context.fillStyle = accent;
   drawRoundedRect(context, x, y, width, height, height / 2);
   context.fill();
 
   context.fillStyle = "#ffffff";
-  context.fillText(text, x + paddingX, y + 49);
+  context.fillText(text, x + paddingX, y + height / 2);
+  context.restore();
 
   return { width, height };
 }
@@ -246,11 +250,11 @@ async function renderCardToDataUrl({ accent, background, card, contentPosition, 
   }
 
   const x = 90;
-  const maxWidth = 880;
+  const maxWidth = 800;
   const startYByPosition = {
-    upper: 210,
-    middle: 420,
-    lower: 720,
+    upper: 190,
+    middle: 520,
+    lower: 620,
   };
   let y = startYByPosition[contentPosition] || startYByPosition.middle;
 
@@ -260,33 +264,32 @@ async function renderCardToDataUrl({ accent, background, card, contentPosition, 
   context.shadowOffsetY = 5;
 
   context.fillStyle = "#e8f5fb";
-  context.font = "900 34px Inter, Arial, sans-serif";
+  context.font = "900 30px Inter, Arial, sans-serif";
   context.fillText("ПОКАНА ЗА", x, y);
-  y += 64;
+  y += 58;
 
   context.fillStyle = "#ffffff";
-  context.font = "900 92px Inter, Arial, sans-serif";
-  y = drawTextBlock(context, card.eventTitle, x, y, maxWidth, 98) + 20;
+  context.font = "900 76px Inter, Arial, sans-serif";
+  y = drawTextBlock(context, card.eventTitle, x, y, maxWidth, 82) + 20;
 
-  context.font = "900 44px Inter, Arial, sans-serif";
+  context.font = "900 38px Inter, Arial, sans-serif";
   context.fillText(`Скъпи ${card.guestName},`, x, y);
-  y += 76;
+  y += 66;
 
-  context.font = "400 40px Inter, Arial, sans-serif";
-  y = drawTextBlock(context, `${card.hostName} те кани да празнувате заедно в ${card.place}.`, x, y, maxWidth, 58) + 28;
+  context.font = "400 34px Inter, Arial, sans-serif";
+  y = drawTextBlock(context, `${card.hostName} те кани да празнувате заедно в ${card.place}.`, x, y, maxWidth, 50) + 26;
 
-  context.shadowColor = "transparent";
   const datePill = drawPill(context, card.date, x, y, accent);
-  drawPill(context, card.time, x + datePill.width + 34, y, accent);
-  y += datePill.height + 42;
+  drawPill(context, card.time, x + datePill.width + 28, y, accent);
+  y += datePill.height + 36;
 
   context.shadowColor = "rgba(0, 0, 0, 0.44)";
   context.fillStyle = "#ffffff";
-  context.font = "400 40px Inter, Arial, sans-serif";
-  y = drawTextBlock(context, card.note, x, y, maxWidth, 58) + 42;
+  context.textBaseline = "top";
+  context.font = "400 34px Inter, Arial, sans-serif";
+  y = drawTextBlock(context, card.note, x, y, maxWidth, 50) + 36;
 
-  context.shadowColor = "transparent";
-  drawPill(context, `Потвърди до ${card.rsvpDate}`, x, y, accent, 40);
+  drawPill(context, `Потвърди до ${card.rsvpDate}`, x, Math.min(y, height - 150), accent, 34);
 
   return canvas.toDataURL("image/png");
 }
