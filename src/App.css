@@ -23,6 +23,7 @@ body {
 
 button,
 input,
+select,
 textarea {
   font: inherit;
 }
@@ -193,6 +194,7 @@ label {
 }
 
 input,
+select,
 textarea {
   width: 100%;
   border: 1px solid #cfd8e2;
@@ -207,6 +209,11 @@ input {
   padding: 0 12px;
 }
 
+select {
+  min-height: 44px;
+  padding: 0 12px;
+}
+
 textarea {
   min-height: 104px;
   padding: 12px;
@@ -214,6 +221,7 @@ textarea {
 }
 
 input:focus,
+select:focus,
 textarea:focus {
   border-color: #0f8ab3;
   box-shadow: 0 0 0 3px rgba(15, 138, 179, 0.16);

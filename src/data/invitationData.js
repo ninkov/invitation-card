@@ -10,6 +10,7 @@ export const templates = [
     accent: "#0f8ab3",
     background: partyDefault,
     fields: {
+      salutation: "Скъпи",
       hostName: "Ники",
       guestName: "Алекс",
       eventTitle: "Рожден ден",
@@ -26,6 +27,7 @@ export const templates = [
     accent: "#56a6c8",
     background: frozenKingdom,
     fields: {
+      salutation: "Скъпа",
       hostName: "Ема",
       guestName: "Мая",
       eventTitle: "Приказно Frozen парти",
@@ -42,6 +44,7 @@ export const templates = [
     accent: "#d83b3b",
     background: spiderMan,
     fields: {
+      salutation: "Скъпи",
       hostName: "Мартин",
       guestName: "Виктор",
       eventTitle: "Супергеройски рожден ден",
@@ -58,6 +61,7 @@ export const templates = [
     accent: "#f0b23f",
     background: marvel,
     fields: {
+      salutation: "Скъпи",
       hostName: "Дани",
       guestName: "Крис",
       eventTitle: "Avengers рожден ден",
@@ -71,6 +75,7 @@ export const templates = [
 ];
 
 export const fieldLabels = {
+  salutation: "Обръщение",
   guestName: "Име на гост",
   hostName: "Име на празнуващ",
   eventTitle: "Заглавие",
@@ -80,6 +85,8 @@ export const fieldLabels = {
   rsvpDate: "Потвърждение до",
   note: "Допълнителен текст",
 };
+
+export const salutationOptions = ["Скъпи", "Скъпа", "Скъпи гости"];
 
 export const shareTargets = [
   { id: "whatsapp", label: "WhatsApp" },

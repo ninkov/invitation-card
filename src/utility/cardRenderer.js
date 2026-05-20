@@ -146,7 +146,7 @@ export async function renderCardToDataUrl({ accent, background, card, contentPos
   y = drawTextBlock(context, card.eventTitle, x, y, maxWidth, 82) + 20;
 
   context.font = "900 38px Inter, Arial, sans-serif";
-  context.fillText(`Скъпи ${card.guestName},`, x, y);
+  context.fillText(`${card.salutation} ${card.guestName},`, x, y);
   y += 66;
 
   context.font = "400 34px Inter, Arial, sans-serif";

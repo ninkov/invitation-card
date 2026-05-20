@@ -4,7 +4,14 @@ import download from "downloadjs";
 import "./App.css";
 import InvitationEditor from "./components/InvitationEditor";
 import InvitationPreview from "./components/InvitationPreview";
-import { fieldLabels, layoutOptions, partyDefault, shareTargets, templates } from "./data/invitationData";
+import {
+  fieldLabels,
+  layoutOptions,
+  partyDefault,
+  salutationOptions,
+  shareTargets,
+  templates,
+} from "./data/invitationData";
 import { renderCardToDataUrl } from "./utility/cardRenderer";
 import { dataUrlToFile, fileToDataUrl, imageUrlToDataUrl } from "./utility/imageFiles";
 
@@ -125,6 +132,7 @@ function App() {
           onPhotoUpload={handlePhotoUpload}
           onShare={shareCard}
           onUpdateField={updateField}
+          salutationOptions={salutationOptions}
           setContentPosition={setContentPosition}
           shareStatus={shareStatus}
           shareTargets={shareTargets}

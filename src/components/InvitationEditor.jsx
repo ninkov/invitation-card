@@ -10,6 +10,7 @@ export default function InvitationEditor({
   onPhotoUpload,
   onShare,
   onUpdateField,
+  salutationOptions,
   setContentPosition,
   shareStatus,
   shareTargets,
@@ -45,7 +46,15 @@ export default function InvitationEditor({
         {Object.entries(fieldLabels).map(([field, label]) => (
           <label key={field} className={field === "note" ? "wide-field" : ""}>
             <span>{label}</span>
-            {field === "note" ? (
+            {field === "salutation" ? (
+              <select value={card[field]} onChange={(event) => onUpdateField(field, event.target.value)}>
+                {salutationOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            ) : field === "note" ? (
               <textarea value={card[field]} onChange={(event) => onUpdateField(field, event.target.value)} rows="4" />
             ) : (
               <input value={card[field]} onChange={(event) => onUpdateField(field, event.target.value)} />
